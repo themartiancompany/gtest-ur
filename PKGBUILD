@@ -47,27 +47,9 @@ check() {
 package() {
   DESTDIR="${pkgdir}" cmake --install build
 
-  # Shouldn't be present
-  find "${pkgdir}" -name '*.pump' -printf 'Removing %P\n' -delete
-
   cd ${_srcname}
   install -Dm 644 LICENSE -t "${pkgdir}/usr/share/licenses/${pkgname}"
   install -Dm 644 README.md CONTRIBUTORS -t "${pkgdir}/usr/share/doc/${pkgname}"
-
-  cd googletest
-  install -Dm 644 cmake/* -t "${pkgdir}/usr/src/googletest/cmake"
-  install -Dm 644 src/* -t "${pkgdir}/usr/src/googletest/src"
-  install -Dm 644 CMakeLists.txt -t "${pkgdir}/usr/src/googletest"
-
-  cd ../googlemock
-  install -Dm 644 cmake/* -t "${pkgdir}/usr/src/gmock/cmake"
-  install -Dm 644 src/* -t "${pkgdir}/usr/src/gmock/src"
-  install -Dm 644 CMakeLists.txt -t "${pkgdir}/usr/src/gmock"
-
-  sed -i 's|src/||' "${pkgdir}/usr/src/gmock/src/gmock-all.cc"
-
-  python -m compileall -d /usr/share/gmock "${pkgdir}/usr/share/gmock"
-  python -O -m compileall -d /usr/share/gmock "${pkgdir}/usr/share/gmock"
 }
 
 # vim: ts=2 sw=2 et:
