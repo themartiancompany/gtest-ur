@@ -54,7 +54,7 @@
 
 _os="$( \
   uname \
-    -m)"
+    -o)"
 if [[ "${_os}" == "Android" ]]; then
   _libc="ndk-sysroot"
   _libcompiler="libllvm"
@@ -126,7 +126,7 @@ build() {
   local \
     _cmake_opts=()
   _cmake_opts+=(
-   -H"${_srcname}"
+   -H"${_tarname}"
    -B"build"
    -DCMAKE_INSTALL_PREFIX="/usr"
    -DCMAKE_BUILD_TYPE="None"
@@ -135,8 +135,8 @@ build() {
    -Dgtest_build_tests="ON"
    -DGOOGLETEST_VERSION="${pkgver}"
   )
- cmake \
-   "${_cmake_opts[@]}"
+  cmake \
+    "${_cmake_opts[@]}"
   cmake \
     --build \
       "build"
