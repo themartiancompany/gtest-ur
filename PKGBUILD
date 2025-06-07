@@ -52,6 +52,16 @@
 #   acxz
 #     <akashpatel2008 at yahoo dot com>
 
+_os="$( \
+  uname \
+    -m)"
+if [[ "${_os}" == "Android" ]]; then
+  _libc="ndk-sysroot"
+  _libcompiler="libllvm"
+elif [[ "${_os}" == "GNU/Linux" ]]; then
+  _libc="glibc"
+  _libcompiler="gcc-libs"
+fi
 _py="python"
 _pkg=gtest
 _Pkg="googletest"
@@ -75,15 +85,19 @@ license=(
   'BSD-3-Clause'
 )
 depends=(
-  'gcc-libs'
-  'glibc'
+  "${_libcompiler}"
+  "${_libc}"
 )
 makedepends=(
   'cmake'
   "${_py}"
 )
+_py_optdepends=(
+  "${_py}:"
+    "gmock generator."
+)
 optdepends=(
-  "${_py}: gmock generator"
+  "${_py_optdepends[*]}"
 )
 conflicts=(
   'gmock'
