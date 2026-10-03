@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0
 
 #    ----------------------------------------------------------------------
-#    Copyright © 2024, 2025  Pellegrino Prevete
+#    Copyright © 2024, 2025, 2026  Pellegrino Prevete
 #
 #    All rights reserved
 #    ----------------------------------------------------------------------
@@ -19,54 +19,51 @@
 #    You should have received a copy of the GNU Affero General Public License
 #    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-# Maintainer:
+# Maintainers:
 #   Truocolo
 #     <truocolo@aol.com>
 #     <truocolo@0x6E5163fC4BFc1511Dbe06bB605cc14a3e462332b>
-# Maintainer:
 #   Pellegrino Prevete (dvorak)
 #     <pellegrinoprevete@gmail.com>
 #     <dvorak@0x87003Bd6C074C713783df04f36517451fF34CBEf>
-# Maintainer:
 #   Carl Smedstad
 #     <carsme@archlinux.org>
-# Maintainer:
 #   Levente Polyak
 #     <anthraxx[at]archlinux[dot]org>
-# Contributor:
+# Contributors:
 #   Felix Yan
 #     <felixonmars@archlinux.org>
-# Contributor:
 #   Jan Alexander Steffens (heftig)
 #     <jan.steffens@gmail.com>
-# Contributor:
 #   Alexandre Bique
 #     <bique.alexandre@gmail.com>
-# Contributor:
 #   Louis R. Marascio
 #     <lrm@fitnr.com>
-# Contributor:
 #   Cody Maloney
 #     <cmaloney@theoreticalchaos.com>
-# Contributor:
 #   acxz
 #     <akashpatel2008 at yahoo dot com>
 
-_os="$( \
+_os="$(
   uname \
     -o)"
 if [[ "${_os}" == "Android" ]]; then
   _libc="ndk-sysroot"
-  _libcompiler="libllvm"
+  _libcompiler="libc++"
+  _compiler="clang"
 elif [[ "${_os}" == "GNU/Linux" ]]; then
+  _compiler="gcc"
   _libc="glibc"
   _libcompiler="gcc-libs"
+fi
+if [[ ! -v "_tests" ]]; then
+  _tests="false"
 fi
 _py="python"
 _pkg=gtest
 _Pkg="googletest"
 pkgname="${_pkg}"
-pkgver=1.17.0
+pkgver=1.18.0
 pkgrel=1
 _pkgdesc=(
   'Google Test - C++ testing utility'
@@ -76,9 +73,14 @@ _http="https://github.com"
 _ns="google"
 url="${_http}/${_ns}/${_Pkg}"
 arch=(
-  'arm'
   'aarch64'
+  'arm'
+  'armv7l'
+  'armv8l'
   'i686'
+  'mips'
+  'pentium4'
+  'powerpc'
   'x86_64'
 )
 license=(
@@ -91,6 +93,7 @@ depends=(
 makedepends=(
   'cmake'
   "${_py}"
+  "${_compiler}"
 )
 _py_optdepends=(
   "${_py}:"
@@ -107,6 +110,7 @@ replaces=(
 )
 provides=(
   'gmock'
+  "googletest"
   'libgmock.so'
   'libgmock_main.so'
   "lib${_pkg}.so"
@@ -122,6 +126,28 @@ sha512sums=(
   "${_sum}"
 )
 
+prepare() {
+  local \
+    _version
+  _version="$(
+    sed \
+      -En \
+        's/^set\(GOOGLETEST_VERSION\s+([0-9.]+).*/\1/p' \
+      "CMakeLists.txt")"
+  if [[ "${pkgver}" != "${_version}"  ]]; then
+    _msg=(
+      "Version detected from sources"
+      "different from version declared"
+      "in the package."
+    )
+    echo \
+      "${_msg[*]}" \
+      1>&2
+    exit \
+      1
+  fi
+}
+
 build() {
   local \
     _cmake_opts=()
@@ -132,9 +158,13 @@ build() {
    -DCMAKE_BUILD_TYPE="None"
    -Wno-dev
    -DBUILD_SHARED_LIBS="ON"
-   -Dgtest_build_tests="ON"
    -DGOOGLETEST_VERSION="${pkgver}"
   )
+  if [[ "${_tests}" == "true" ]]; then
+    _cmake_opts+=(
+      -Dgtest_build_tests="ON"
+    )
+  fi
   cmake \
     "${_cmake_opts[@]}"
   cmake \
