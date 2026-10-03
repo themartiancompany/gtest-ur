@@ -118,11 +118,11 @@ provides=(
 )
 _tarname="${_Pkg}-${pkgver}"
 _src="${_tarname}.tar.gz::${url}/archive/v${pkgver}.tar.gz"
-_sum='0f57e9ef06925e5b7722df1eb92ef5850e8dce79220ea16a8aaff586a71c0b01460ef1713649ee24ffedb2e6ad5a51e9198c5a5ae1b2789e43feb1f494e7d45c'
+_sum="6e3191c1455468b3fc35a417fb565c1c5071aee1b7e7f85e30cf48a98d37d8b5"
 source=(
   "${_src}"
 )
-sha512sums=(
+sha256sums=(
   "${_sum}"
 )
 
