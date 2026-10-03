@@ -55,6 +55,13 @@ elif [[ "${_os}" == "GNU/Linux" ]]; then
   _compiler="gcc"
   _libc="glibc"
   _libcompiler="gcc-libs"
+elif [[ "${_os}" == "Msys" ]]; then
+  _libc="msys2-w32api-runtime"
+  _libc_headers="msys2-w32api-headers"
+  _compiler="gcc"
+  _libcompiler="gcc-libs"
+  _sh="sh"
+  _mailcap="winpty"
 fi
 if [[ ! -v "_tests" ]]; then
   _tests="false"
