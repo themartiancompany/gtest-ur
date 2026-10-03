@@ -136,7 +136,7 @@ prepare() {
     sed \
       -En \
         's/^set\(GOOGLETEST_VERSION\s+([0-9.]+).*/\1/p' \
-      "CMakeLists.txt")"
+      "${_tarname}/CMakeLists.txt")"
   if [[ "${pkgver}" != "${_version}"  ]]; then
     _msg=(
       "Version detected from sources"
