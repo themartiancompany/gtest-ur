@@ -62,9 +62,12 @@ fi
 _py="python"
 _pkg=gtest
 _Pkg="googletest"
-pkgname="${_pkg}"
+pkgbase="${_pkg}"
+pkgname=(
+  "${_pkg}"
+)
 pkgver=1.18.0
-pkgrel=1
+pkgrel=2
 _pkgdesc=(
   'Google Test - C++ testing utility'
 )
