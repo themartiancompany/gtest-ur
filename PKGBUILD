@@ -74,7 +74,7 @@ pkgname=(
   "${_pkg}"
 )
 pkgver=1.18.0
-pkgrel=3
+pkgrel=4
 _pkgdesc=(
   'Google Test - C++ testing utility'
 )
